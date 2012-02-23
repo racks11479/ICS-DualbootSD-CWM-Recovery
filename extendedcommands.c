@@ -354,7 +354,7 @@ void show_nandroid_restore_menu(const char* path)
         return;
 
     if (confirm_selection("Confirm restore?", "Yes - Restore"))
-        nandroid_restore(file, 1, 1, 1, 1, 1, 1, 1, 1, 0);
+        nandroid_restore(file, 1, 1, 1, 1, 1, 0);
 }
 
 #ifndef BOARD_UMS_LUNFILE
@@ -773,11 +773,8 @@ void show_nandroid_advanced_restore_menu(const char* path)
     };
 
     static char* list[] = { "Restore boot",
-                            "Restore system1",
-                            "Restore data1",
-                            "Restore system2",
-                            "Restore data2",
-                            "Restore datadata",
+                            "Restore system",
+                            "Restore data",
                             "Restore cache",
                             "Restore sd-ext",
                             "Restore wimax",
@@ -796,39 +793,27 @@ void show_nandroid_advanced_restore_menu(const char* path)
     {
         case 0:
             if (confirm_selection(confirm_restore, "Yes - Restore boot"))
-                nandroid_restore(file, 1, 0, 0, 0, 0, 0, 0, 0, 0);
+                nandroid_restore(file, 1, 0, 0, 0, 0, 0);
             break;
         case 1:
-            if (confirm_selection(confirm_restore, "Yes - Restore system1"))
-                nandroid_restore(file, 0, 1, 0, 0, 0, 0, 0, 0, 0);
+            if (confirm_selection(confirm_restore, "Yes - Restore system"))
+                nandroid_restore(file, 0, 1, 0, 0, 0, 0);
             break;
         case 2:
-            if (confirm_selection(confirm_restore, "Yes - Restore data1"))
-                nandroid_restore(file, 0, 0, 1, 0, 0, 0, 0, 0, 0);
+            if (confirm_selection(confirm_restore, "Yes - Restore data"))
+                nandroid_restore(file, 0, 0, 1, 0, 0, 0);
             break;
         case 3:
-            if (confirm_selection(confirm_restore, "Yes - Restore system2"))
-                nandroid_restore(file, 0, 0, 0, 1, 0, 0, 0, 0, 0);
+            if (confirm_selection(confirm_restore, "Yes - Restore cache"))
+                nandroid_restore(file, 0, 0, 0, 1, 0, 0);
             break;
         case 4:
-            if (confirm_selection(confirm_restore, "Yes - Restore data2"))
-                nandroid_restore(file, 0, 0, 0, 0, 1, 0, 0, 0, 0);
+            if (confirm_selection(confirm_restore, "Yes - Restore sd-ext"))
+                nandroid_restore(file, 0, 0, 0, 0, 1, 0);
             break;
         case 5:
-            if (confirm_selection(confirm_restore, "Yes - Restore datadata"))
-                nandroid_restore(file, 0, 0, 0, 0, 0, 1, 0, 0, 0);
-            break;
-        case 6:
-            if (confirm_selection(confirm_restore, "Yes - Restore cache"))
-                nandroid_restore(file, 0, 0, 0, 0, 0, 0, 1, 0, 0);
-            break;
-        case 7:
-            if (confirm_selection(confirm_restore, "Yes - Restore sd-ext"))
-                nandroid_restore(file, 0, 0, 0, 0, 0, 0, 0, 1, 0);
-            break;
-        case 8:
             if (confirm_selection(confirm_restore, "Yes - Restore wimax"))
-                nandroid_restore(file, 0, 0, 0, 0, 0, 0, 0, 0, 1);
+                nandroid_restore(file, 0, 0, 0, 0, 0, 1);
             break;
     }
 }
@@ -908,11 +893,9 @@ void show_nandroid_menu()
 
 void wipe_battery_stats()
 {
-    ensure_path_mounted("/data1");
-    ensure_path_mounted("/data2");
+    ensure_path_mounted("/data");
     remove("/data/system/batterystats.bin");
-    ensure_path_unmounted("/data1");
-    ensure_path_unmounted("/data2");
+    ensure_path_unmounted("/data");
     ui_print("Battery Stats wiped.\n");
 }
 
@@ -924,8 +907,7 @@ void show_advanced_menu()
     };
 
     static char* list[] = { "Reboot Recovery",
-                            "Wipe System1 Dalvik Cache",
-                            "Wipe System2 Dalvik Cache",
+                            "Wipe Dalvik Cache",
                             "Wipe Battery Stats",
                             "Report Error",
                             "Key Test",
@@ -952,44 +934,29 @@ void show_advanced_menu()
             }
             case 1:
             {
-                if (0 != ensure_path_mounted("/data1"))
+                if (0 != ensure_path_mounted("/data"))
                     break;
                 ensure_path_mounted("/sd-ext");
                 ensure_path_mounted("/cache");
-                if (confirm_selection( "Confirm wipe?", "Yes - Wipe System1 Dalvik Cache")) {
-                    __system("rm -r /data1/dalvik-cache");
+                if (confirm_selection( "Confirm wipe?", "Yes - Wipe Dalvik Cache")) {
+                    __system("rm -r /data/dalvik-cache");
                     __system("rm -r /cache/dalvik-cache");
                     __system("rm -r /sd-ext/dalvik-cache");
                     ui_print("Dalvik Cache wiped.\n");
                 }
-                ensure_path_unmounted("/data1");
+                ensure_path_unmounted("/data");
                 break;
             }
             case 2:
-            {
-                if (0 != ensure_path_mounted("/data2"))
-                    break;
-                ensure_path_mounted("/sd-ext");
-                ensure_path_mounted("/cache");
-                if (confirm_selection( "Confirm wipe?", "Yes - Wipe System2 Dalvik Cache")) {
-                    __system("rm -r /data2/dalvik-cache");
-                    __system("rm -r /cache/dalvik-cache");
-                    __system("rm -r /sd-ext/dalvik-cache");
-                    ui_print("Dalvik Cache wiped.\n");
-                }
-                ensure_path_unmounted("/data2");
-                break;
-            }
-            case 3:
             {
                 if (confirm_selection( "Confirm wipe?", "Yes - Wipe Battery Stats"))
                     wipe_battery_stats();
                 break;
             }
-            case 4:
+            case 3:
                 handle_failure(1);
                 break;
-            case 5:
+            case 4:
             {
                 ui_print("Outputting key codes.\n");
                 ui_print("Go back to end debugging.\n");
@@ -1004,12 +971,12 @@ void show_advanced_menu()
                 while (action != GO_BACK);
                 break;
             }
-            case 6:
+            case 5:
             {
                 ui_printlogtail(12);
                 break;
             }
-            case 7:
+            case 6:
             {
                 static char* ext_sizes[] = { "128M",
                                              "256M",
@@ -1052,7 +1019,7 @@ void show_advanced_menu()
                     ui_print("An error occured while partitioning your SD Card. Please see /tmp/recovery.log for more details.\n");
                 break;
             }
-            case 8:
+            case 7:
             {
                 ensure_path_mounted("/system");
                 ensure_path_mounted("/data");
@@ -1061,7 +1028,7 @@ void show_advanced_menu()
                 ui_print("Done!\n");
                 break;
             }
-            case 9:
+            case 8:
             {
                 static char* ext_sizes[] = { "128M",
                                              "256M",
@@ -1141,12 +1108,10 @@ void create_fstab()
     if (NULL != vol && strcmp(vol->fs_type, "mtd") != 0 && strcmp(vol->fs_type, "emmc") != 0 && strcmp(vol->fs_type, "bml") != 0)
          write_fstab_root("/boot", file);
     write_fstab_root("/cache", file);
-    write_fstab_root("/data1", file);
-    write_fstab_root("/data2", file);
+    write_fstab_root("/data", file);
     write_fstab_root("/datadata", file);
     write_fstab_root("/emmc", file);
-    write_fstab_root("/system1", file);
-    write_fstab_root("/system2", file);
+    write_fstab_root("/system", file);
     write_fstab_root("/sdcard", file);
     write_fstab_root("/sd-ext", file);
     fclose(file);
@@ -1190,10 +1155,8 @@ void process_volumes() {
 
     ui_print("Checking for ext4 partitions...\n");
     int ret = 0;
-    ret = bml_check_volume("/system1");
-    ret |= bml_check_volume("/data1");
-    ret = bml_check_volume("/system2");
-    ret |= bml_check_volume("/data2");
+    ret = bml_check_volume("/system");
+    ret |= bml_check_volume("/data");
     if (has_datadata())
         ret |= bml_check_volume("/datadata");
     ret |= bml_check_volume("/cache");
@@ -1219,7 +1182,7 @@ void process_volumes() {
     ui_print("in case of error.\n");
 
     nandroid_backup(backup_path);
-    nandroid_restore(backup_path, 1, 1, 1, 1, 1, 1, 1, 1, 0);
+    nandroid_restore(backup_path, 1, 1, 1, 1, 1, 0);
     ui_set_show_text(0);
 }
 
