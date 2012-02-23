@@ -185,11 +185,8 @@ Value* RestoreFn(const char* name, State* state, int argc, Expr* argv[]) {
     
     char* path = strdup(args2[0]);
     int restoreboot = 1;
-    int restoresystem1 = 1;
-    int restoredata1 = 1;
-    int restoresystem2 = 1;
-    int restoredatadata = 1;
-    int restoredata2 = 1;
+    int restoresystem = 1;
+    int restoredata = 1;
     int restorecache = 1;
     int restoresdext = 1;
     int i;
