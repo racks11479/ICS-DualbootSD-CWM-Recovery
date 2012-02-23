@@ -14,10 +14,8 @@ on init
     mkdir /sd-ext
     mkdir /datadata
     mkdir /emmc
-    mkdir /system1
-    mkdir /data1
-    mkdir /system2
-    mkdir /data2
+    mkdir /system
+    mkdir /data
     mkdir /cache
     mount /tmp /tmp tmpfs
 

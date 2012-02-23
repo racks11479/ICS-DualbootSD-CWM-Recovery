@@ -1190,10 +1190,8 @@ void process_volumes() {
 
     ui_print("Checking for ext4 partitions...\n");
     int ret = 0;
-    ret = bml_check_volume("/system1");
-    ret |= bml_check_volume("/data1");
-    ret = bml_check_volume("/system2");
-    ret |= bml_check_volume("/data2");
+    ret = bml_check_volume("/system");
+    ret |= bml_check_volume("/data");
     if (has_datadata())
         ret |= bml_check_volume("/datadata");
     ret |= bml_check_volume("/cache");
